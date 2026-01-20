@@ -126,7 +126,7 @@ const deleteProduct = async (id: string) => {
     throw err
   }
 
-  await Product.deleteOne({ _id: id })
+  await Product.findByIdAndUpdate(id, { isActive: false })
 }
 
 const productService = function (this: Seneca.Instance) {
