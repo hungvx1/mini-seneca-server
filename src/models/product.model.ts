@@ -1,4 +1,5 @@
-import { Document, Schema, model } from 'mongoose'
+import { Document, model, Schema } from 'mongoose'
+import mongoosePaginate from 'mongoose-paginate'
 
 interface IProduct extends Document {
   name: string
@@ -24,6 +25,8 @@ const productSchema = new Schema<IProduct>(
   },
   { timestamps: true }
 )
+
+productSchema.plugin(mongoosePaginate)
 
 const Product = model<IProduct>('Product', productSchema)
 

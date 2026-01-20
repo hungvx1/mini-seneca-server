@@ -33,7 +33,16 @@ const createProduct = async ({
   })
 }
 
-const getProducts = async () => Product.find()
+const getProducts = async ({
+  page = 1,
+  limit = 2,
+}: {
+  page: number
+  limit: number
+}) => {
+  const products = await Product.paginate({}, { page, limit })
+  return products
+}
 
 const getProductById = async (id: string) => {
   const product = await Product.findById(id)
@@ -98,9 +107,9 @@ const productService = function (this: Seneca.Instance) {
     }
   })
 
-  seneca.add({ role: 'product', cmd: 'list' }, async (_msg, reply) => {
+  seneca.add({ role: 'product', cmd: 'list' }, async (msg, reply) => {
     try {
-      const products = await getProducts()
+      const products = await getProducts(msg)
       reply(null, products)
     } catch (err) {
       reply(err)
