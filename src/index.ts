@@ -2,7 +2,9 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import 'dotenv/config'
 import { errorHandler } from './middlewares/error.middleware'
+import connectDB from './config/db'
 
+connectDB()
 const port = process.env.PORT || 3000
 const app = express()
 
