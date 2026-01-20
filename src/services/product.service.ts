@@ -62,19 +62,24 @@ const countProducts = async ({ category }: { category: string }) => {
 
 const getProducts = async ({
   category,
-  page = 1,
-  limit = 2,
+  page,
+  limit,
 }: {
   category?: string
-  page: number
-  limit: number
+  page?: string
+  limit?: string
 }) => {
-  // FIXME: better type this
-  const query: any = {}
+  const query: Record<string, string> = {}
   if (category) {
     query.category = category
   }
-  const products = await Product.paginate(query, { page, limit })
+
+  const options = {
+    page: page ? Number(page) : 1,
+    limit: limit ? Number(limit) : 2,
+  }
+
+  const products = await Product.paginate(query, options)
   return products
 }
 
@@ -152,7 +157,7 @@ const productService = function (this: Seneca.Instance) {
 
   seneca.add({ role: 'product', cmd: 'list' }, async (msg, reply) => {
     try {
-      const products = await getProducts({ ...msg, limit: Number(msg.limit) })
+      const products = await getProducts(msg)
       reply(null, products)
     } catch (err) {
       reply(err)
