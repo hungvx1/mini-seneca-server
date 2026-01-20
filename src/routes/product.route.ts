@@ -29,6 +29,27 @@ const createProduct = async (
   )
 }
 
+const countProduts = async (
+  req: Request,
+  res: Response,
+  seneca: Seneca.Instance
+) => {
+  seneca.act(
+    {
+      role: 'product',
+      cmd: 'count',
+      category: req.query.category,
+    },
+    (err, count) => {
+      if (err) {
+        return res.status(500).json({ message: 'Internal error' })
+      }
+
+      return res.json(count)
+    }
+  )
+}
+
 const getProducts = async (
   req: Request,
   res: Response,
@@ -136,6 +157,8 @@ export default function productRoutes(seneca: Seneca.Instance) {
     .route('/')
     .post((req, res) => createProduct(req, res, seneca))
     .get((req, res) => getProducts(req, res, seneca))
+
+  router.get('/count', (req, res) => countProduts(req, res, seneca))
 
   router
     .route('/:id')

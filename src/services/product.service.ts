@@ -33,6 +33,33 @@ const createProduct = async ({
   })
 }
 
+const countProducts = async ({ category }: { category: string }) => {
+  const pipeline = []
+
+  // Only count active products
+  pipeline.push({
+    $match: { isActive: true },
+  })
+
+  // // Conditionally filter by category
+  if (category) {
+    pipeline.push({
+      $match: { category },
+    })
+  }
+
+  pipeline.push({
+    $count: 'count',
+  })
+
+  const result = await Product.aggregate(pipeline)
+  const res = {
+    count: result.length ? result[0].count : 0,
+  }
+
+  return res
+}
+
 const getProducts = async ({
   category,
   page = 1,
@@ -109,6 +136,15 @@ const productService = function (this: Seneca.Instance) {
     try {
       const product = await createProduct(msg)
       reply(null, product)
+    } catch (err) {
+      reply(err)
+    }
+  })
+
+  seneca.add({ role: 'product', cmd: 'count' }, async (msg, reply) => {
+    try {
+      const count = await countProducts(msg)
+      reply(null, count)
     } catch (err) {
       reply(err)
     }
