@@ -1,68 +1,70 @@
-import asyncHandler from 'express-async-handler'
+import Seneca from 'seneca'
 import Product from '../models/product.model'
 
-// @desc    Get products
-// @route   GET /api/products
-// @access  Public
-export const getProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find()
-  res.json(products)
-})
-
-// @desc    Get a product
-// @route   GET /api/product/:id
-// @access  Public
-export const getProduct = asyncHandler(async (req, res) => {
-  const product = await Product.findById(req.params.id)
-  res.json(product)
-})
-
-// @desc    Add a product
-// @route   POST /api/products
-// @access  Private
-export const addProduct = asyncHandler(async (req, res) => {
-  const {
-    name,
-    sku,
-    category,
-    price,
-  }: { name: string; sku: string; category: string; price: number } = req.body
-
+const createProduct = async ({
+  name,
+  sku,
+  category,
+  price,
+}: {
+  name: string
+  sku: string
+  category: string
+  price: number
+}) => {
   if (!name || !sku || !category || price == null) {
-    return res.status(400).json({ message: 'Missing required fields' })
+    const err = new Error('Missing required fields')
+    ;(err as any).code = 'invalid_input'
+    throw err
   }
 
   const exists = await Product.findOne({ sku })
   if (exists) {
-    return res.status(409).json({ message: 'SKU already exists' })
+    const err = new Error('SKU already exists')
+    ;(err as any).code = 'conflict'
+    throw err
   }
 
-  const product = await Product.create({
+  return Product.create({
     name,
     sku,
     category,
     price,
   })
+}
 
-  res.status(201).json(product)
-})
+const getProducts = async () => Product.find()
 
-// @desc    Update a product
-// @route   PUT /api/product/:id
-// @access  Private
-export const updateProduct = asyncHandler(async (req, res) => {
-  const product = await Product.findById(req.params.id)
+const getProductById = async (id: string) => {
+  const product = await Product.findById(id)
   if (!product) {
-    res.status(404)
-    throw new Error('Product not found')
+    const err = new Error('Product not found')
+    ;(err as any).code = 'not_found'
+    throw err
   }
 
-  const {
-    name,
-    sku,
-    category,
-    price,
-  }: { name: string; sku: string; category: string; price: number } = req.body
+  return product
+}
+
+const updateProduct = async ({
+  id,
+  name,
+  sku,
+  category,
+  price,
+}: {
+  id: string
+  name: string
+  sku: string
+  category: string
+  price: number
+}) => {
+  const product = await Product.findById(id)
+  if (!product) {
+    const err = new Error('Product not found')
+    ;(err as any).code = 'not_found'
+    throw err
+  }
 
   product.name = name || product.name
   product.sku = sku || product.sku
@@ -70,19 +72,67 @@ export const updateProduct = asyncHandler(async (req, res) => {
   product.price = price || product.price
 
   const updatedProduct = await product.save()
-  res.json(updatedProduct)
-})
+  return updatedProduct
+}
 
-// @desc    Delete a product
-// @route   DELETE /api/product/:id
-// @access  Private
-export const deleteProduct = asyncHandler(async (req, res) => {
-  const product = await Product.findById(req.params.id)
+const deleteProduct = async (id: string) => {
+  const product = await Product.findById(id)
   if (!product) {
-    res.status(404)
-    throw new Error('Product not found')
+    const err = new Error('Product not found')
+    ;(err as any).code = 'not_found'
+    throw err
   }
 
-  await Product.deleteOne({ _id: req.params.id })
-  res.json({ message: 'Product successfully removed' })
-})
+  await Product.deleteOne({ _id: id })
+}
+
+const productService = function (this: Seneca.Instance) {
+  const seneca = this
+
+  seneca.add({ role: 'product', cmd: 'create' }, async (msg, reply) => {
+    try {
+      const product = await createProduct(msg)
+      reply(null, product)
+    } catch (err) {
+      reply(err)
+    }
+  })
+
+  seneca.add({ role: 'product', cmd: 'list' }, async (_msg, reply) => {
+    try {
+      const products = await getProducts()
+      reply(null, products)
+    } catch (err) {
+      reply(err)
+    }
+  })
+
+  seneca.add({ role: 'product', cmd: 'get' }, async (msg, reply) => {
+    try {
+      const product = await getProductById(msg.id)
+      reply(null, product)
+    } catch (err) {
+      reply(err)
+    }
+  })
+
+  seneca.add({ role: 'product', cmd: 'update' }, async (msg, reply) => {
+    try {
+      const product = await updateProduct(msg)
+      reply(null, product)
+    } catch (err) {
+      reply(err)
+    }
+  })
+
+  seneca.add({ role: 'product', cmd: 'delete' }, async (msg, reply) => {
+    try {
+      await deleteProduct(msg.id)
+      reply(null)
+    } catch (err) {
+      reply(err)
+    }
+  })
+}
+
+export default productService
