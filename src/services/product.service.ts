@@ -116,7 +116,7 @@ const productService = function (this: Seneca.Instance) {
 
   seneca.add({ role: 'product', cmd: 'list' }, async (msg, reply) => {
     try {
-      const products = await getProducts(msg)
+      const products = await getProducts({ ...msg, limit: Number(msg.limit) })
       reply(null, products)
     } catch (err) {
       reply(err)

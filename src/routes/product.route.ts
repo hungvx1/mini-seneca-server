@@ -38,7 +38,7 @@ const getProducts = async (
     {
       role: 'product',
       cmd: 'list',
-      ...req.body,
+      ...req.query,
     },
     (err, products) => {
       if (err) {
