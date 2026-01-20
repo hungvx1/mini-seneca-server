@@ -34,13 +34,20 @@ const createProduct = async ({
 }
 
 const getProducts = async ({
+  category,
   page = 1,
   limit = 2,
 }: {
+  category?: string
   page: number
   limit: number
 }) => {
-  const products = await Product.paginate({}, { page, limit })
+  // FIXME: better type this
+  const query: any = {}
+  if (category) {
+    query.category = category
+  }
+  const products = await Product.paginate(query, { page, limit })
   return products
 }
 
