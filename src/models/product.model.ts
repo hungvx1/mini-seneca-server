@@ -5,7 +5,8 @@ interface IProduct extends Document {
   sku: string
   category: string
   price: number
-  quantity: number
+  quantity?: number
+  lowStockThreshold?: number
   isActive?: boolean
   createdAt: Date
   updatedAt: Date
@@ -18,10 +19,12 @@ const productSchema = new Schema<IProduct>(
     category: { type: String, required: true },
     price: { type: Number, required: true },
     quantity: { type: Number, default: 0 },
+    lowStockThreshold: { type: Number, default: 5 },
     isActive: { type: Boolean, default: true },
   },
   { timestamps: true }
 )
-const Product = model('Product', productSchema)
+
+const Product = model<IProduct>('Product', productSchema)
 
 export default Product
