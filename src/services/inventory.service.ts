@@ -2,6 +2,7 @@ import { Types } from 'mongoose'
 import Seneca from 'seneca'
 import InventoryLog from '../models/inventory.model'
 import Product from '../models/product.model'
+import { AppError } from '../types'
 
 export default function inventoryService(this: Seneca.Instance) {
     const seneca = this
@@ -15,30 +16,32 @@ export default function inventoryService(this: Seneca.Instance) {
             const change = +msg.change
 
             if (!Types.ObjectId.isValid(productId)) {
-                const err = new Error('Invalid Product ID')
-                ;(err as any).code = 'invalid_product_id'
-                throw err
+                throw new AppError({
+                    code: 'invalid_product_id',
+                    message: 'Invalid Product ID',
+                    status: 400,
+                })
             }
 
-            if (!change || change === 0) {
-                const err = new Error('Change must be non-zero')
-                ;(err as any).code = 'invalid_change'
-                throw err
-            }
+            validateChange(reason, change)
 
             const product = await Product.findById(productId)
             if (!product) {
-                const err = new Error('Product not found')
-                ;(err as any).code = 'not_found'
-                throw err
+                throw new AppError({
+                    code: 'not_found',
+                    message: 'Product not found',
+                    status: 404,
+                })
             }
 
             const newQty = (product.quantity as number) + change
 
             if (newQty < 0) {
-                const err = new Error('Insufficient stock')
-                ;(err as any).code = 'insufficient_stock'
-                throw err
+                throw new AppError({
+                    code: 'insufficient_stock',
+                    message: 'Insufficient stock',
+                    status: 409,
+                })
             }
 
             product.quantity = newQty
@@ -71,5 +74,31 @@ export default function inventoryService(this: Seneca.Instance) {
         } catch (err) {
             reply(err)
         }
+    }
+}
+
+function validateChange(reason: string, change: number) {
+    if (reason === 'sale' && change >= 0) {
+        throw new AppError({
+            code: 'invalid_change',
+            message: 'Sale must have a negative change',
+            status: 409,
+        })
+    }
+
+    if (reason === 'purchase' && change <= 0) {
+        throw new AppError({
+            code: 'invalid_change',
+            message: 'Purchase must have a positive change',
+            status: 409,
+        })
+    }
+
+    if (reason === 'adjustment' && change === 0) {
+        throw new AppError({
+            code: 'invalid_change',
+            message: 'Adjustment change cannot be zero',
+            status: 409,
+        })
     }
 }

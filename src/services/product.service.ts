@@ -1,6 +1,7 @@
 import { Types } from 'mongoose'
 import Seneca from 'seneca'
 import Product from '../models/product.model'
+import { AppError } from '../types'
 
 export default function productService(this: Seneca.Instance) {
     const seneca = this
@@ -17,16 +18,20 @@ export default function productService(this: Seneca.Instance) {
             const { name, sku, category, price, lowStockThreshold } = msg
 
             if (!name || !sku || !category || price == null) {
-                const err = new Error('Missing required fields')
-                ;(err as any).code = 'invalid_input'
-                throw err
+                throw new AppError({
+                    code: 'invalid_input',
+                    message: 'Missing required fields',
+                    status: 400,
+                })
             }
 
             const exists = await Product.findOne({ sku })
             if (exists) {
-                const err = new Error('SKU already exists')
-                ;(err as any).code = 'conflict'
-                throw err
+                throw new AppError({
+                    code: 'sku_conflict',
+                    message: 'SKU already exists',
+                    status: 409,
+                })
             }
 
             const product = await Product.create({
@@ -141,9 +146,11 @@ export default function productService(this: Seneca.Instance) {
 
             const result = await Product.aggregate(pipeline)
             if (result.length === 0) {
-                const err = new Error('Product not found')
-                ;(err as any).code = 'not_found'
-                throw err
+                throw new AppError({
+                    code: 'not_found',
+                    message: 'Product not found',
+                    status: 404,
+                })
             }
 
             reply(null, result[0])
@@ -171,9 +178,11 @@ export default function productService(this: Seneca.Instance) {
         try {
             const product = await Product.findById(id)
             if (!product) {
-                const err = new Error('Product not found')
-                ;(err as any).code = 'not_found'
-                throw err
+                throw new AppError({
+                    code: 'not_found',
+                    message: 'Product not found',
+                    status: 404,
+                })
             }
 
             product.name = name || product.name
@@ -192,9 +201,11 @@ export default function productService(this: Seneca.Instance) {
         try {
             const product = await Product.findById(id)
             if (!product) {
-                const err = new Error('Product not found')
-                ;(err as any).code = 'not_found'
-                throw err
+                throw new AppError({
+                    code: 'not_found',
+                    message: 'Product not found',
+                    status: 404,
+                })
             }
 
             await Product.findByIdAndUpdate(id, { isActive: false })

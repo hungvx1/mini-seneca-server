@@ -1,5 +1,7 @@
 import { Request, Response } from 'express'
 import Seneca from 'seneca'
+import { SenecaError } from '../types'
+import { sendHttpError } from './error.controller'
 
 const createProduct = async (
     req: Request,
@@ -14,20 +16,7 @@ const createProduct = async (
         },
         (err, product) => {
             if (err) {
-                switch ((err as any).details?.orig$?.code) {
-                    case 'invalid_input':
-                        return res
-                            .status(400)
-                            .json({ message: err.details.message })
-                    case 'conflict':
-                        return res
-                            .status(409)
-                            .json({ message: err.details.message })
-                    default:
-                        return res
-                            .status(500)
-                            .json({ message: 'Internal error' })
-                }
+                return sendHttpError(res, (err as SenecaError).details?.orig$)
             }
 
             return res.status(201).json(product)
@@ -48,7 +37,7 @@ const countProduts = async (
         },
         (err, count) => {
             if (err) {
-                return res.status(500).json({ message: 'Internal error' })
+                return sendHttpError(res, (err as SenecaError).details?.orig$)
             }
 
             return res.json(count)
@@ -69,7 +58,7 @@ const listProducts = async (
         },
         (err, products) => {
             if (err) {
-                return res.status(500).json({ message: 'Internal error' })
+                return sendHttpError(res, (err as SenecaError).details?.orig$)
             }
 
             return res.json(products)
@@ -90,16 +79,7 @@ const getProduct = async (
         },
         (err, product) => {
             if (err) {
-                switch ((err as any).details?.orig$?.code) {
-                    case 'not_found':
-                        return res
-                            .status(404)
-                            .json({ message: err.details.message })
-                    default:
-                        return res
-                            .status(500)
-                            .json({ message: 'Internal error' })
-                }
+                return sendHttpError(res, (err as SenecaError).details?.orig$)
             }
 
             return res.json(product)
@@ -121,16 +101,7 @@ const updateProduct = async (
         },
         (err, product) => {
             if (err) {
-                switch ((err as any).details?.orig$?.code) {
-                    case 'not_found':
-                        return res
-                            .status(404)
-                            .json({ message: err.details.message })
-                    default:
-                        return res
-                            .status(500)
-                            .json({ message: 'Internal error' })
-                }
+                return sendHttpError(res, (err as SenecaError).details?.orig$)
             }
 
             return res.json(product)
@@ -151,16 +122,7 @@ const deleteProduct = async (
         },
         (err) => {
             if (err) {
-                switch ((err as any).details?.orig$?.code) {
-                    case 'not_found':
-                        return res
-                            .status(404)
-                            .json({ message: err.details.message })
-                    default:
-                        return res
-                            .status(500)
-                            .json({ message: 'Internal error' })
-                }
+                return sendHttpError(res, (err as SenecaError).details?.orig$)
             }
 
             return res.json({ message: 'Product successfully removed' })
@@ -169,10 +131,10 @@ const deleteProduct = async (
 }
 
 export {
-    createProduct,
     countProduts,
-    listProducts,
-    getProduct,
-    updateProduct,
+    createProduct,
     deleteProduct,
+    getProduct,
+    listProducts,
+    updateProduct,
 }

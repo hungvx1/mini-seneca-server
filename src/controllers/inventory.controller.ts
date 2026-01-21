@@ -1,5 +1,7 @@
 import { Request, Response } from 'express'
 import Seneca from 'seneca'
+import { SenecaError } from '../types'
+import { sendHttpError } from './error.controller'
 
 const createInventoryLog = async (
     req: Request,
@@ -15,21 +17,7 @@ const createInventoryLog = async (
         },
         (err, result) => {
             if (err) {
-                // FIXME: Handle possible errors
-                switch ((err as any).details?.orig$?.code) {
-                    case 'invalid_input':
-                        return res
-                            .status(400)
-                            .json({ message: err.details.message })
-                    case 'conflict':
-                        return res
-                            .status(409)
-                            .json({ message: err.details.message })
-                    default:
-                        return res
-                            .status(500)
-                            .json({ message: 'Internal error' })
-                }
+                return sendHttpError(res, (err as SenecaError).details?.orig$)
             }
 
             return res.status(201).json(result)
@@ -50,21 +38,7 @@ const getInventoryLog = async (
         },
         (err, result) => {
             if (err) {
-                // FIXME: Handle possible errors
-                switch ((err as any).details?.orig$?.code) {
-                    case 'invalid_input':
-                        return res
-                            .status(400)
-                            .json({ message: err.details.message })
-                    case 'conflict':
-                        return res
-                            .status(409)
-                            .json({ message: err.details.message })
-                    default:
-                        return res
-                            .status(500)
-                            .json({ message: 'Internal error' })
-                }
+                return sendHttpError(res, (err as SenecaError).details?.orig$)
             }
 
             return res.json(result)
