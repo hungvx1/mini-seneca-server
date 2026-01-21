@@ -1,5 +1,6 @@
 import { Request, Response, Router } from 'express'
 import Seneca from 'seneca'
+import inventoryRoutes from './inventory.route'
 
 const createProduct = async (
   req: Request,
@@ -165,6 +166,8 @@ export default function productRoutes(seneca: Seneca.Instance) {
     .get((req, res) => getProductById(req, res, seneca))
     .put((req, res) => updateProduct(req, res, seneca))
     .delete((req, res) => deleteProduct(req, res, seneca))
+
+  router.use('/:id/inventory-logs', inventoryRoutes(seneca))
 
   return router
 }
