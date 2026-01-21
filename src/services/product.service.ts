@@ -13,7 +13,7 @@ export default function productService(this: Seneca.Instance) {
 
   async function createProduct(msg: any, reply: any) {
     try {
-      const { name, sku, category, price } = msg
+      const { name, sku, category, price, lowStockThreshold } = msg
 
       if (!name || !sku || !category || price == null) {
         const err = new Error('Missing required fields')
@@ -33,6 +33,7 @@ export default function productService(this: Seneca.Instance) {
         sku,
         category,
         price,
+        lowStockThreshold,
       })
 
       reply(null, product)
