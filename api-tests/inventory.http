@@ -1,0 +1,18 @@
+@baseUrl = http://localhost:3000
+@productId = REPLACE_WITH_PRODUCT_ID
+
+###
+# 1. Get inventory logs
+# Optional query params: page, limit
+GET {{baseUrl}}/api/products/{{productId}}/inventory-logs?page=1&limit=10
+
+###
+# 2. Adjust inventory (create inventory log)
+POST {{baseUrl}}/api/products/{{productId}}/inventory-logs
+Content-Type: application/json
+
+{
+  "change": -2,
+  "reason": "sale",
+  "note": "Sold 2 items to customer #1234"
+}
