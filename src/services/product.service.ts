@@ -107,7 +107,7 @@ export default function productService(this: Seneca.Instance) {
         reply: any
     ) {
         try {
-            const query: Record<string, string> = {}
+            const query: Record<string, any> = { isActive: true }
             if (category) {
                 query.category = category
             }
