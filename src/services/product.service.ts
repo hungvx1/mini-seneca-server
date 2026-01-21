@@ -71,6 +71,18 @@ export default function productService(this: Seneca.Instance) {
                 $count: 'count',
             })
 
+            /** Alternative
+            pipeline.push([
+                { $match: { isActive: true } },
+                {
+                    $group: {
+                        _id: '$category',
+                        count: { $sum: 1 },
+                    },
+                },
+            ])
+             */
+
             const result = await Product.aggregate(pipeline)
             const count = {
                 count: result.length ? result[0].count : 0,
@@ -102,7 +114,7 @@ export default function productService(this: Seneca.Instance) {
 
             const options = {
                 page: page ? Number(page) : 1,
-                limit: limit ? Number(limit) : 2,
+                limit: limit ? Number(limit) : 10,
             }
 
             const products = await Product.paginate(query, options)
@@ -121,6 +133,7 @@ export default function productService(this: Seneca.Instance) {
                 {
                     $match: {
                         _id: Types.ObjectId(id),
+                        isActive: true,
                     },
                 },
                 {
@@ -176,7 +189,10 @@ export default function productService(this: Seneca.Instance) {
         reply: any
     ) {
         try {
-            const product = await Product.findById(id)
+            const product = await Product.findOne({
+                _id: id,
+                isActive: true,
+            })
             if (!product) {
                 throw new AppError({
                     code: 'not_found',
@@ -199,7 +215,10 @@ export default function productService(this: Seneca.Instance) {
 
     async function deleteProduct({ id }: { id: string }, reply: any) {
         try {
-            const product = await Product.findById(id)
+            const product = await Product.findOne({
+                _id: id,
+                isActive: true,
+            })
             if (!product) {
                 throw new AppError({
                     code: 'not_found',
