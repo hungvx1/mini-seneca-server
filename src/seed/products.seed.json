@@ -1,0 +1,259 @@
+[
+    {
+        "name": "Wireless Mouse",
+        "sku": "EL-1001",
+        "category": "electronics",
+        "price": 19.99,
+        "lowStockThreshold": 10
+    },
+    {
+        "name": "Mechanical Keyboard",
+        "sku": "EL-1002",
+        "category": "electronics",
+        "price": 89.99,
+        "lowStockThreshold": 5
+    },
+    {
+        "name": "USB-C Charger",
+        "sku": "EL-1003",
+        "category": "electronics",
+        "price": 24.99
+    },
+    {
+        "name": "Bluetooth Headphones",
+        "sku": "EL-1004",
+        "category": "electronics",
+        "price": 59.99,
+        "lowStockThreshold": 8
+    },
+    {
+        "name": "Webcam 1080p",
+        "sku": "EL-1005",
+        "category": "electronics",
+        "price": 49.99
+    },
+
+    {
+        "name": "Office Chair",
+        "sku": "FU-2001",
+        "category": "furniture",
+        "price": 149.99,
+        "lowStockThreshold": 2
+    },
+    {
+        "name": "Standing Desk",
+        "sku": "FU-2002",
+        "category": "furniture",
+        "price": 399.99
+    },
+    {
+        "name": "Bookshelf",
+        "sku": "FU-2003",
+        "category": "furniture",
+        "price": 129.99
+    },
+    {
+        "name": "Desk Lamp",
+        "sku": "FU-2004",
+        "category": "furniture",
+        "price": 29.99,
+        "lowStockThreshold": 6
+    },
+    {
+        "name": "Filing Cabinet",
+        "sku": "FU-2005",
+        "category": "furniture",
+        "price": 99.99
+    },
+
+    {
+        "name": "Notebook A5",
+        "sku": "ST-3001",
+        "category": "stationery",
+        "price": 3.49,
+        "lowStockThreshold": 50
+    },
+    {
+        "name": "Notebook A4",
+        "sku": "ST-3002",
+        "category": "stationery",
+        "price": 5.99,
+        "lowStockThreshold": 40
+    },
+    {
+        "name": "Ballpoint Pen",
+        "sku": "ST-3003",
+        "category": "stationery",
+        "price": 0.99
+    },
+    {
+        "name": "Gel Pen Set",
+        "sku": "ST-3004",
+        "category": "stationery",
+        "price": 4.49
+    },
+    {
+        "name": "Highlighter Pack",
+        "sku": "ST-3005",
+        "category": "stationery",
+        "price": 6.99
+    },
+
+    {
+        "name": "Water Bottle 1L",
+        "sku": "AC-4001",
+        "category": "accessories",
+        "price": 12.99
+    },
+    {
+        "name": "Backpack",
+        "sku": "AC-4002",
+        "category": "accessories",
+        "price": 49.99,
+        "lowStockThreshold": 7
+    },
+    {
+        "name": "Laptop Sleeve",
+        "sku": "AC-4003",
+        "category": "accessories",
+        "price": 19.99
+    },
+    {
+        "name": "Phone Stand",
+        "sku": "AC-4004",
+        "category": "accessories",
+        "price": 9.99
+    },
+    {
+        "name": "Cable Organizer",
+        "sku": "AC-4005",
+        "category": "accessories",
+        "price": 7.99
+    },
+
+    {
+        "name": "HDMI Cable",
+        "sku": "EL-1006",
+        "category": "electronics",
+        "price": 8.99
+    },
+    {
+        "name": "Ethernet Cable",
+        "sku": "EL-1007",
+        "category": "electronics",
+        "price": 6.99
+    },
+    {
+        "name": "Power Strip",
+        "sku": "EL-1008",
+        "category": "electronics",
+        "price": 14.99
+    },
+    {
+        "name": "External SSD 1TB",
+        "sku": "EL-1009",
+        "category": "electronics",
+        "price": 129.99,
+        "lowStockThreshold": 3
+    },
+    {
+        "name": "USB Flash Drive 64GB",
+        "sku": "EL-1010",
+        "category": "electronics",
+        "price": 15.99
+    },
+
+    {
+        "name": "Whiteboard",
+        "sku": "OF-5001",
+        "category": "office",
+        "price": 39.99
+    },
+    {
+        "name": "Whiteboard Marker Set",
+        "sku": "OF-5002",
+        "category": "office",
+        "price": 8.99
+    },
+    {
+        "name": "Paper Shredder",
+        "sku": "OF-5003",
+        "category": "office",
+        "price": 79.99,
+        "lowStockThreshold": 2
+    },
+    {
+        "name": "Desk Organizer",
+        "sku": "OF-5004",
+        "category": "office",
+        "price": 14.99
+    },
+    {
+        "name": "Wall Clock",
+        "sku": "OF-5005",
+        "category": "office",
+        "price": 19.99
+    },
+
+    {
+        "name": "Coffee Mug",
+        "sku": "KT-6001",
+        "category": "kitchen",
+        "price": 6.99
+    },
+    {
+        "name": "Electric Kettle",
+        "sku": "KT-6002",
+        "category": "kitchen",
+        "price": 34.99
+    },
+    {
+        "name": "Lunch Box",
+        "sku": "KT-6003",
+        "category": "kitchen",
+        "price": 12.49
+    },
+    {
+        "name": "Cutlery Set",
+        "sku": "KT-6004",
+        "category": "kitchen",
+        "price": 19.99
+    },
+    {
+        "name": "Thermal Flask",
+        "sku": "KT-6005",
+        "category": "kitchen",
+        "price": 24.99
+    },
+
+    {
+        "name": "Cleaning Spray",
+        "sku": "CL-7001",
+        "category": "cleaning",
+        "price": 4.99
+    },
+    {
+        "name": "Microfiber Cloth",
+        "sku": "CL-7002",
+        "category": "cleaning",
+        "price": 2.99
+    },
+    {
+        "name": "Trash Bags",
+        "sku": "CL-7003",
+        "category": "cleaning",
+        "price": 5.49
+    },
+    {
+        "name": "Hand Sanitizer",
+        "sku": "CL-7004",
+        "category": "cleaning",
+        "price": 3.99
+    },
+    {
+        "name": "Disinfectant Wipes",
+        "sku": "CL-7005",
+        "category": "cleaning",
+        "price": 6.49
+    }
+]
