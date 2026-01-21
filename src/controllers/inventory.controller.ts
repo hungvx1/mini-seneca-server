@@ -35,6 +35,7 @@ const getInventoryLog = async (
             role: 'inventory',
             cmd: 'history',
             productId: req.params.id,
+            ...req.query,
         },
         (err, result) => {
             if (err) {

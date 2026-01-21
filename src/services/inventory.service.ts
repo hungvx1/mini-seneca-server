@@ -8,7 +8,7 @@ export default function inventoryService(this: Seneca.Instance) {
     const seneca = this
 
     seneca.add('role:inventory,cmd:adjust', createInventoryLog)
-    seneca.add('role:inventory,cmd:history', getInventoryLog)
+    seneca.add('role:inventory,cmd:history', listInventoryLog)
 
     async function createInventoryLog(msg: any, reply: any) {
         try {
@@ -66,11 +66,17 @@ export default function inventoryService(this: Seneca.Instance) {
         }
     }
 
-    async function getInventoryLog(msg: any, reply: any) {
+    async function listInventoryLog(msg: any, reply: any) {
         try {
-            const { productId } = msg
-            const product = await InventoryLog.find({ productId })
-            reply(null, product)
+            const { page, limit } = msg
+            const options = {
+                page: page ? Number(page) : 1,
+                limit: limit ? Number(limit) : 10,
+                sort: { createdAt: -1 },
+            }
+
+            const logs = await InventoryLog.paginate({}, options)
+            reply(null, logs)
         } catch (err) {
             reply(err)
         }
