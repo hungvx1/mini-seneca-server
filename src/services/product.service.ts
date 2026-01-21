@@ -1,3 +1,4 @@
+import { Types } from 'mongoose'
 import Seneca from 'seneca'
 import Product from '../models/product.model'
 
@@ -105,13 +106,42 @@ export default function productService(this: Seneca.Instance) {
 
   async function getProduct({ id }: { id: string }, reply: any) {
     try {
-      const product = await Product.findById(id)
-      if (!product) {
+      const pipeline = []
+
+      // Get the most 10 recent logs along with the product
+      pipeline.push(
+        {
+          $match: {
+            _id: Types.ObjectId(id),
+          },
+        },
+        {
+          $lookup: {
+            from: 'inventories',
+            let: { productId: '$_id' },
+            pipeline: [
+              {
+                // https://www.mongodb.com/docs/manual/tutorial/aggregation-examples/multi-field-join/
+                $match: {
+                  $expr: { $eq: ['$productId', '$$productId'] },
+                },
+              },
+              { $sort: { createdAt: -1 } },
+              { $limit: 10 },
+            ],
+            as: 'recentInventoryLogs',
+          },
+        }
+      )
+
+      const result = await Product.aggregate(pipeline)
+      if (result.length === 0) {
         const err = new Error('Product not found')
         ;(err as any).code = 'not_found'
         throw err
       }
-      reply(null, product)
+
+      reply(null, result[0])
     } catch (err) {
       reply(err)
     }
