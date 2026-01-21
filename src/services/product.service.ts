@@ -115,6 +115,7 @@ export default function productService(this: Seneca.Instance) {
             const options = {
                 page: page ? Number(page) : 1,
                 limit: limit ? Number(limit) : 10,
+                sort: { createdAt: -1 },
             }
 
             const products = await Product.paginate(query, options)
