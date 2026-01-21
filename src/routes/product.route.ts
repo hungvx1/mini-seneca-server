@@ -164,7 +164,7 @@ export default function productRoutes(seneca: Seneca.Instance) {
   router
     .route('/:id')
     .get((req, res) => getProductById(req, res, seneca))
-    .put((req, res) => updateProduct(req, res, seneca))
+    .patch((req, res) => updateProduct(req, res, seneca))
     .delete((req, res) => deleteProduct(req, res, seneca))
 
   router.use('/:id/inventory-logs', inventoryRoutes(seneca))
